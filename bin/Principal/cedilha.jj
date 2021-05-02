@@ -13,6 +13,7 @@ options {
 PARSER_BEGIN(cedilha)
 package Principal;
 import java.io.*;
+import java.util.LinkedList;
 
 public class cedilha {
   
@@ -87,43 +88,81 @@ void exibe() : {}
 	<EXIBE> <IDENT>
 }
 
-void atribui() : {Simbolo simb; Token t;} 
+void atribui() : {Simbolo simb; Token t; LinkedList<Item> listaExp;} 
 {
-     t=<IDENT>
+	t=<IDENT>
 	{
 		simb = new Simbolo(t.image);
 		tabela.inclui(simb);
 	}
-	<ATRIB> expressao()
-}
-
-void expressao() : {} 
-{
-	fator() ( <ADICAO> fator() )*
-}
-
-void fator() : {Token t;} 
-{
-	t = <IDENT>
+	<ATRIB> listaExp = expressao()
 	{
-		if(!tabela.isExiste(t.image))
-			System.out.println("Erro semântico \n A variável "+t.image+"não foi inicializada");
-
+		System.out.println(listaExp);
 	}
-	|numero()
 }
 
-void numero() : {} 
+LinkedList<Item> expressao() : {LinkedList<Item> listaExp = new LinkedList<Item>(); Item item = null;} 
 {
-	dezena() ( unidade() )? | unidade()
+	item = fator()
+	{
+		listaExp.add(item);
+	}
+	(
+		<ADICAO> item = fator()
+		{
+			listaExp.add(item);
+			listaExp.add(new Item('o',"+"));
+		}
+	)*
+	{
+		return listaExp;
+	}
 }
 
-void unidade() : {} 
+Item fator() : {Token t;Item item = null; int valorNumero;} 
 {
-	<UM> | <DOIS> | <TRES> | <QUATRO> | <CINCO> | <SEIS> | <SETE> | <OITO> | <NOVE>
+      t = <IDENT>
+      {
+         if(!tabela.isExiste(t.image))
+          System.out.println("Erro semântico \n A variável "+t.image+
+                             " não foi inicializada");
+         item = new Item('v',t.image);
+         return item;
+      }
+  |
+      valorNumero = numero()
+      {
+         item = new Item('n',""+valorNumero);
+         return item;
+      }
 }
 
-void dezena() : {} 
+int numero() : {int valorUnidade = 0, valorDezena = 0;} 
 {
-	<DEZ> | <VINTE> | <TRINTA>
+	(
+		valorDezena = dezena() ( valorUnidade = unidade() )? | valorUnidade = unidade()
+	)
+	{
+		return valorDezena + valorUnidade;
+	}
+}
+
+int unidade() : {} 
+{
+	<UM>     { return 1; } |
+	<DOIS>   { return 2; } |
+	<TRES>   { return 3; } |
+	<QUATRO> { return 4; } |
+	<CINCO>  { return 5; } |
+	<SEIS>   { return 6; } |
+	<SETE>   { return 7; } |
+	<OITO>   { return 8; } |
+	<NOVE>   { return 9; }
+}
+
+int dezena() : {} 
+{
+	<DEZ>    { return 10; } |
+	<VINTE>  { return 20; } |
+	<TRINTA> { return 30; }
 }
