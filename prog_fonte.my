@@ -1,5 +1,8 @@
-a := XIX + IV + II;
-b := XXXVIII;
-soma := a + b;
-nova := a + III + b;
-exibe soma;
+valor := V;
+caixa := VI;
+preco := IV;
+total := valor + X + caixa + XX + preco + IX;
+exibe valor;
+exibe caixa;
+exibe preco;
+exibe total;

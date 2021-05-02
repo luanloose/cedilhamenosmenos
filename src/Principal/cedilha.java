@@ -16,7 +16,8 @@ public class cedilha implements cedilhaConstants {
          analisador = new cedilha(new FileInputStream("prog_fonte.my"));
          listaComandos = analisador.inicio();
          //System.out.println(tabela.toString());
-         System.out.println(listaComandos);
+         //System.out.println(listaComandos);
+         GeradorCodigoDestino.geraCodigoAssembler(listaComandos);
       }
       catch(FileNotFoundException e) {
          System.out.println("Erro: arquivo n\u00e3o encontrado");

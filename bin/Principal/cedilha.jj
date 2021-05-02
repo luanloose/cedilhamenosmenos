@@ -1,13 +1,11 @@
-/*  cedilha.jj  -  Analisador Sintático com tabela de simbolos*/
-
+/*  cedilha.jj  -  -  Gerador de código intermediário e destino para o programa fonte completo
+                   -  O gerador de código destino se encontra na chamada (linha 23) do método estático:
+                      GeradorCodigoDestino.geraCodigoAssembler(listaComandos);
+*/
 options {
-
   JDK_VERSION = "1.5";
-
   DEBUG_PARSER = false;
-
   DEBUG_TOKEN_MANAGER = false;
-
 }
 
 PARSER_BEGIN(cedilha)
@@ -28,7 +26,8 @@ public class cedilha {
          analisador = new cedilha(new FileInputStream("prog_fonte.my"));
          listaComandos = analisador.inicio();
          //System.out.println(tabela.toString());
-         System.out.println(listaComandos);
+         //System.out.println(listaComandos);
+         GeradorCodigoDestino.geraCodigoAssembler(listaComandos);
       }
       catch(FileNotFoundException e) {
          System.out.println("Erro: arquivo não encontrado");
