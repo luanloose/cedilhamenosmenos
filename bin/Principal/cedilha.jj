@@ -1,5 +1,68 @@
-/**
- * JavaCC template file created by SF JavaCC plugin 1.5.28+ wizard for JavaCC 1.5.0+
- */options{  static = true;}PARSER_BEGIN(cedilha)package Principal;
+/*  cedilha.jj  -  Analisador Léxico */
 
-public class cedilha{  public static void main(String args []) throws ParseException  {    cedilha parser = new cedilha(System.in);    while (true)    {      System.out.println("Reading from standard input...");      System.out.print("Enter an expression like \"1+(2+3)*4;\" :");      try      {        switch (cedilha.one_line())        {          case 0 :           System.out.println("OK.");          break;          case 1 :           System.out.println("Goodbye.");          break;          default :           break;        }      }      catch (Exception e)      {        System.out.println("NOK.");        System.out.println(e.getMessage());        cedilha.ReInit(System.in);      }      catch (Error e)      {        System.out.println("Oops.");        System.out.println(e.getMessage());        break;      }    }  }}PARSER_END(cedilha)SKIP :{  " "| "\r"| "\t"| "\n"}TOKEN : /* OPERATORS */{  < PLUS : "+" >| < MINUS : "-" >| < MULTIPLY : "*" >| < DIVIDE : "/" >}TOKEN :{  < CONSTANT : (< DIGIT >)+ >| < #DIGIT : [ "0"-"9" ] >}int one_line() :{}{  sum() ";"  {    return 0;  }| ";"  {    return 1;  }}void sum() :{}{  term()  (    (      < PLUS >    | < MINUS >    )    term()  )*}void term() :{}{  unary()  (    (      < MULTIPLY >    | < DIVIDE >    )    unary()  )*}void unary() :{}{  < MINUS > element()| element()}void element() :{}{  < CONSTANT >| "(" sum() ")"}
+options {
+
+  JDK_VERSION = "1.5";
+
+  DEBUG_PARSER = false;
+
+  DEBUG_TOKEN_MANAGER = false;
+
+}
+
+PARSER_BEGIN(cedilha)
+package Principal;
+import java.io.*;
+
+public class cedilha {
+   public static void main(String args[])  throws ParseException  {
+      cedilha analisador = null;
+      try {
+         analisador = new cedilha(new FileInputStream("prog_fonte.my"));
+         analisador.inicio();
+      }
+      catch(FileNotFoundException e) {
+         System.out.println("Erro: arquivo não encontrado");
+      }
+      catch(TokenMgrError e) {
+         System.out.println("Erro léxico\n" + e.getMessage());
+      }
+   }
+}
+
+PARSER_END(cedilha)
+
+SKIP : { " " | "\t" | "\r" | "\n" }
+
+
+TOKEN [IGNORE_CASE] : {
+      <EXIBE: "exibe" >
+}
+TOKEN : {
+
+      < IDENT:   (["a"-"z"])+ > |
+      < ATRIB:   ":=" >         |
+      < ADICAO:  "+" >          |
+      < PT_VIRG: ";" >          |
+      < UM:      "I" >          |
+      < DOIS:    "II" >         |
+      < TRES:    "III" >        |
+      < QUATRO:  "IV" >         |
+      < CINCO:   "V" >          |
+      < SEIS:    "VI" >         |
+      < SETE:    "VII" >        |
+      < OITO:    "VIII" >       |
+      < NOVE:    "IX" >         |
+      < DEZ:     "X" >          |
+      < VINTE:   "XX" >         |
+      < TRINTA:  "XXX" >      
+}               
+JAVACODE void inicio()
+{
+   Token t;
+   do {
+      t = getNextToken();
+      System.out.println(tokenImage[t.kind]+"\t"+t.image);
+   }
+   while(t.kind != EOF);
+}
