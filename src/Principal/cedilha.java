@@ -13,7 +13,7 @@ public class cedilha implements cedilhaConstants {
       try {
          analisador = new cedilha(new FileInputStream("prog_fonte.my"));
          analisador.inicio();
-         System.out.println(tabela.toString());
+         //System.out.println(tabela.toString());
       }
       catch(FileNotFoundException e) {
          System.out.println("Erro: arquivo n\u00e3o encontrado");
@@ -95,9 +95,12 @@ public class cedilha implements cedilhaConstants {
   }
 
   static final public void fator() throws ParseException {
+                Token t;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IDENT:
-      jj_consume_token(IDENT);
+      t = jj_consume_token(IDENT);
+                if(!tabela.isExiste(t.image))
+                        System.out.println("Erro sem\u00e2ntico \u005cn A vari\u00e1vel "+t.image+"n\u00e3o foi inicializada");
       break;
     case UM:
     case DOIS:
