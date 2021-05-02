@@ -17,13 +17,190 @@ public class cedilha implements cedilhaConstants {
       }
    }
 
-  static void inicio() throws ParseException {
-   Token t;
-   do {
-      t = getNextToken();
-      System.out.println(tokenImage[t.kind]+"\u005ct"+t.image);
-   }
-   while(t.kind != EOF);
+  static final public void inicio() throws ParseException {
+    label_1:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case EXIBE:
+      case IDENT:
+        ;
+        break;
+      default:
+        jj_la1[0] = jj_gen;
+        break label_1;
+      }
+      linhaComando();
+    }
+    jj_consume_token(0);
+  }
+
+  static final public void linhaComando() throws ParseException {
+    comando();
+    jj_consume_token(PT_VIRG);
+  }
+
+  static final public void comando() throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case EXIBE:
+      exibe();
+      break;
+    case IDENT:
+      atribui();
+      break;
+    default:
+      jj_la1[1] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+  }
+
+  static final public void exibe() throws ParseException {
+    jj_consume_token(EXIBE);
+    jj_consume_token(IDENT);
+  }
+
+  static final public void atribui() throws ParseException {
+    jj_consume_token(IDENT);
+    jj_consume_token(ATRIB);
+    expressao();
+  }
+
+  static final public void expressao() throws ParseException {
+    fator();
+    label_2:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case ADICAO:
+        ;
+        break;
+      default:
+        jj_la1[2] = jj_gen;
+        break label_2;
+      }
+      jj_consume_token(ADICAO);
+      fator();
+    }
+  }
+
+  static final public void fator() throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case IDENT:
+      jj_consume_token(IDENT);
+      break;
+    case UM:
+    case DOIS:
+    case TRES:
+    case QUATRO:
+    case CINCO:
+    case SEIS:
+    case SETE:
+    case OITO:
+    case NOVE:
+    case DEZ:
+    case VINTE:
+    case TRINTA:
+      numero();
+      break;
+    default:
+      jj_la1[3] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+  }
+
+  static final public void numero() throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case DEZ:
+    case VINTE:
+    case TRINTA:
+      dezena();
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case UM:
+      case DOIS:
+      case TRES:
+      case QUATRO:
+      case CINCO:
+      case SEIS:
+      case SETE:
+      case OITO:
+      case NOVE:
+        unidade();
+        break;
+      default:
+        jj_la1[4] = jj_gen;
+        ;
+      }
+      break;
+    case UM:
+    case DOIS:
+    case TRES:
+    case QUATRO:
+    case CINCO:
+    case SEIS:
+    case SETE:
+    case OITO:
+    case NOVE:
+      unidade();
+      break;
+    default:
+      jj_la1[5] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+  }
+
+  static final public void unidade() throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case UM:
+      jj_consume_token(UM);
+      break;
+    case DOIS:
+      jj_consume_token(DOIS);
+      break;
+    case TRES:
+      jj_consume_token(TRES);
+      break;
+    case QUATRO:
+      jj_consume_token(QUATRO);
+      break;
+    case CINCO:
+      jj_consume_token(CINCO);
+      break;
+    case SEIS:
+      jj_consume_token(SEIS);
+      break;
+    case SETE:
+      jj_consume_token(SETE);
+      break;
+    case OITO:
+      jj_consume_token(OITO);
+      break;
+    case NOVE:
+      jj_consume_token(NOVE);
+      break;
+    default:
+      jj_la1[6] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+  }
+
+  static final public void dezena() throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case DEZ:
+      jj_consume_token(DEZ);
+      break;
+    case VINTE:
+      jj_consume_token(VINTE);
+      break;
+    case TRINTA:
+      jj_consume_token(TRINTA);
+      break;
+    default:
+      jj_la1[7] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
   }
 
   static private boolean jj_initialized_once = false;
@@ -36,13 +213,13 @@ public class cedilha implements cedilhaConstants {
   static public Token jj_nt;
   static private int jj_ntk;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[0];
+  static final private int[] jj_la1 = new int[8];
   static private int[] jj_la1_0;
   static {
       jj_la1_init_0();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {};
+      jj_la1_0 = new int[] {0x60,0x60,0x100,0x3ffc40,0x7fc00,0x3ffc00,0x7fc00,0x380000,};
    }
 
   /** Constructor with InputStream. */
@@ -63,7 +240,7 @@ public class cedilha implements cedilhaConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 0; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 8; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -77,7 +254,7 @@ public class cedilha implements cedilhaConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 0; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 8; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -94,7 +271,7 @@ public class cedilha implements cedilhaConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 0; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 8; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -104,7 +281,7 @@ public class cedilha implements cedilhaConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 0; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 8; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -120,7 +297,7 @@ public class cedilha implements cedilhaConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 0; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 8; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -129,7 +306,7 @@ public class cedilha implements cedilhaConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 0; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 8; i++) jj_la1[i] = -1;
   }
 
   static private Token jj_consume_token(int kind) throws ParseException {
@@ -185,7 +362,7 @@ public class cedilha implements cedilhaConstants {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 0; i++) {
+    for (int i = 0; i < 8; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {

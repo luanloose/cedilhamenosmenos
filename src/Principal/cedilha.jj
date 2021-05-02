@@ -1,13 +1,9 @@
 /*  cedilha.jj  -  Analisador Léxico */
 
 options {
-
   JDK_VERSION = "1.5";
-
   DEBUG_PARSER = false;
-
   DEBUG_TOKEN_MANAGER = false;
-
 }
 
 PARSER_BEGIN(cedilha)
@@ -57,12 +53,52 @@ TOKEN : {
       < VINTE:   "XX" >         |
       < TRINTA:  "XXX" >      
 }               
-JAVACODE void inicio()
+void inicio() : {}
 {
-   Token t;
-   do {
-      t = getNextToken();
-      System.out.println(tokenImage[t.kind]+"\t"+t.image);
-   }
-   while(t.kind != EOF);
+	( linhaComando() )* <EOF>
+}
+
+void linhaComando() : {} 
+{
+	comando() <PT_VIRG>
+}
+
+void comando() : {} 
+{
+	exibe() | atribui()
+}
+
+void exibe() : {}
+{
+	<EXIBE> <IDENT>
+}
+
+void atribui() : {} 
+{
+	<IDENT> <ATRIB> expressao()
+}
+
+void expressao() : {} 
+{
+	fator() ( <ADICAO> fator() )*
+}
+
+void fator() : {} 
+{
+	<IDENT> | numero()
+}
+
+void numero() : {} 
+{
+	dezena() ( unidade() )? | unidade()
+}
+
+void unidade() : {} 
+{
+	<UM> | <DOIS> | <TRES> | <QUATRO> | <CINCO> | <SEIS> | <SETE> | <OITO> | <NOVE>
+}
+
+void dezena() : {} 
+{
+	<DEZ> | <VINTE> | <TRINTA>
 }
