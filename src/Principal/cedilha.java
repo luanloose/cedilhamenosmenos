@@ -3,17 +3,26 @@ package Principal;
 import java.io.*;
 
 public class cedilha implements cedilhaConstants {
+
+   static Tabela tabela = new Tabela();
+
    public static void main(String args[])  throws ParseException  {
+
       cedilha analisador = null;
+
       try {
          analisador = new cedilha(new FileInputStream("prog_fonte.my"));
          analisador.inicio();
+         System.out.println(tabela.toString());
       }
       catch(FileNotFoundException e) {
          System.out.println("Erro: arquivo n\u00e3o encontrado");
       }
       catch(TokenMgrError e) {
          System.out.println("Erro l\u00e9xico\u005cn" + e.getMessage());
+      }
+      catch(ParseException e) {
+         System.out.println("Erro sint\u00e1tico\u005cn" + e.getMessage());
       }
    }
 
@@ -60,7 +69,10 @@ public class cedilha implements cedilhaConstants {
   }
 
   static final public void atribui() throws ParseException {
-    jj_consume_token(IDENT);
+                  Simbolo simb; Token t;
+    t = jj_consume_token(IDENT);
+                simb = new Simbolo(t.image);
+                tabela.inclui(simb);
     jj_consume_token(ATRIB);
     expressao();
   }

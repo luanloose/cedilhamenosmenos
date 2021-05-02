@@ -1,9 +1,13 @@
-/*  cedilha.jj  -  Analisador Léxico */
+/*  cedilha.jj  -  Analisador Sintático com tabela de simbolos*/
 
 options {
+
   JDK_VERSION = "1.5";
+
   DEBUG_PARSER = false;
+
   DEBUG_TOKEN_MANAGER = false;
+
 }
 
 PARSER_BEGIN(cedilha)
@@ -11,17 +15,26 @@ package Principal;
 import java.io.*;
 
 public class cedilha {
+  
+   static Tabela tabela = new Tabela();
+
    public static void main(String args[])  throws ParseException  {
+
       cedilha analisador = null;
+
       try {
          analisador = new cedilha(new FileInputStream("prog_fonte.my"));
          analisador.inicio();
+         System.out.println(tabela.toString());
       }
       catch(FileNotFoundException e) {
          System.out.println("Erro: arquivo não encontrado");
       }
       catch(TokenMgrError e) {
          System.out.println("Erro léxico\n" + e.getMessage());
+      }
+      catch(ParseException e) {
+         System.out.println("Erro sintático\n" + e.getMessage());
       }
    }
 }
@@ -73,9 +86,14 @@ void exibe() : {}
 	<EXIBE> <IDENT>
 }
 
-void atribui() : {} 
+void atribui() : {Simbolo simb; Token t;} 
 {
-	<IDENT> <ATRIB> expressao()
+     t=<IDENT>
+	{
+		simb = new Simbolo(t.image);
+		tabela.inclui(simb);
+	}
+	<ATRIB> expressao()
 }
 
 void expressao() : {} 
