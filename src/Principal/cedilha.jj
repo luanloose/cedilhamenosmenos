@@ -18,15 +18,17 @@ import java.util.LinkedList;
 public class cedilha {
   
    static Tabela tabela = new Tabela();
+   static LinkedList<Comando> listaComandos;
 
    public static void main(String args[])  throws ParseException  {
-
+     
       cedilha analisador = null;
-
+      
       try {
          analisador = new cedilha(new FileInputStream("prog_fonte.my"));
-         analisador.inicio();
+         listaComandos = analisador.inicio();
          //System.out.println(tabela.toString());
+         System.out.println(listaComandos);
       }
       catch(FileNotFoundException e) {
          System.out.println("Erro: arquivo não encontrado");
@@ -68,27 +70,48 @@ TOKEN : {
       < TRINTA:  "XXX" >      
 }
                
-void inicio() : {}
+LinkedList<Comando> inicio() : {Comando com = null; LinkedList<Comando> listaComandos = new LinkedList();}
 {
-	( linhaComando() )* <EOF>
+	( com = linhaComando()
+		{
+			listaComandos.add(com);
+		}
+	)* <EOF>
+	{
+		return listaComandos;
+	}
 }
 
-void linhaComando() : {} 
+Comando linhaComando() : {Comando com;} 
 {
-	comando() <PT_VIRG>
+	com = comando() <PT_VIRG>
+	{
+		return com;
+	}
 }
 
-void comando() : {} 
+Comando comando() : {Comando com;} 
 {
-	exibe() | atribui()
+	(
+		com = exibe()
+		|
+		com = atribui()
+	)
+	{
+		return com;
+	}
 }
 
-void exibe() : {}
+Comando exibe() : {Comando com; Token t;}
 {
-	<EXIBE> <IDENT>
+	<EXIBE> t = <IDENT>
+	{
+		com = new Comando('E',t.image,"");
+		return com;
+	}
 }
 
-void atribui() : {Simbolo simb; Token t; LinkedList<Item> listaExp;} 
+Comando atribui() : {Simbolo simb; Token t; LinkedList<Item> listaExp; Comando com;} 
 {
 	t=<IDENT>
 	{
@@ -97,7 +120,9 @@ void atribui() : {Simbolo simb; Token t; LinkedList<Item> listaExp;}
 	}
 	<ATRIB> listaExp = expressao()
 	{
-		System.out.println(listaExp);
+		//System.out.println(listaExp);
+		com = new Comando('A',t.image,listaExp);
+		return com;
 	}
 }
 
@@ -107,7 +132,7 @@ LinkedList<Item> expressao() : {LinkedList<Item> listaExp = new LinkedList<Item>
 	{
 		listaExp.add(item);
 	}
-	(
+	( 
 		<ADICAO> item = fator()
 		{
 			listaExp.add(item);
@@ -121,20 +146,19 @@ LinkedList<Item> expressao() : {LinkedList<Item> listaExp = new LinkedList<Item>
 
 Item fator() : {Token t;Item item = null; int valorNumero;} 
 {
-      t = <IDENT>
-      {
-         if(!tabela.isExiste(t.image))
-          System.out.println("Erro semântico \n A variável "+t.image+
-                             " não foi inicializada");
-         item = new Item('v',t.image);
-         return item;
-      }
-  |
-      valorNumero = numero()
-      {
-         item = new Item('n',""+valorNumero);
-         return item;
-      }
+	t = <IDENT>
+	{
+		if(!tabela.isExiste(t.image))
+		System.out.println("Erro semântico \n A variável "+t.image+" não foi inicializada");
+		item = new Item('v',t.image);
+		return item;
+	}
+	|
+	valorNumero = numero()
+	{
+		item = new Item('n',""+valorNumero);
+		return item;
+	}
 }
 
 int numero() : {int valorUnidade = 0, valorDezena = 0;} 

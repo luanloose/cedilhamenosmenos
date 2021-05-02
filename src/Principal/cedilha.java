@@ -6,6 +6,7 @@ import java.util.LinkedList;
 public class cedilha implements cedilhaConstants {
 
    static Tabela tabela = new Tabela();
+   static LinkedList<Comando> listaComandos;
 
    public static void main(String args[])  throws ParseException  {
 
@@ -13,8 +14,9 @@ public class cedilha implements cedilhaConstants {
 
       try {
          analisador = new cedilha(new FileInputStream("prog_fonte.my"));
-         analisador.inicio();
+         listaComandos = analisador.inicio();
          //System.out.println(tabela.toString());
+         System.out.println(listaComandos);
       }
       catch(FileNotFoundException e) {
          System.out.println("Erro: arquivo n\u00e3o encontrado");
@@ -27,7 +29,8 @@ public class cedilha implements cedilhaConstants {
       }
    }
 
-  static final public void inicio() throws ParseException {
+  static final public LinkedList<Comando> inicio() throws ParseException {
+                                Comando com = null; LinkedList<Comando> listaComandos = new LinkedList();
     label_1:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -39,44 +42,60 @@ public class cedilha implements cedilhaConstants {
         jj_la1[0] = jj_gen;
         break label_1;
       }
-      linhaComando();
+      com = linhaComando();
+                        listaComandos.add(com);
     }
     jj_consume_token(0);
+                {if (true) return listaComandos;}
+    throw new Error("Missing return statement in function");
   }
 
-  static final public void linhaComando() throws ParseException {
-    comando();
+  static final public Comando linhaComando() throws ParseException {
+                          Comando com;
+    com = comando();
     jj_consume_token(PT_VIRG);
+                {if (true) return com;}
+    throw new Error("Missing return statement in function");
   }
 
-  static final public void comando() throws ParseException {
+  static final public Comando comando() throws ParseException {
+                     Comando com;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case EXIBE:
-      exibe();
+      com = exibe();
       break;
     case IDENT:
-      atribui();
+      com = atribui();
       break;
     default:
       jj_la1[1] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
+                {if (true) return com;}
+    throw new Error("Missing return statement in function");
   }
 
-  static final public void exibe() throws ParseException {
+  static final public Comando exibe() throws ParseException {
+                   Comando com; Token t;
     jj_consume_token(EXIBE);
-    jj_consume_token(IDENT);
+    t = jj_consume_token(IDENT);
+                com = new Comando('E',t.image,"");
+                {if (true) return com;}
+    throw new Error("Missing return statement in function");
   }
 
-  static final public void atribui() throws ParseException {
-                  Simbolo simb; Token t; LinkedList<Item> listaExp;
+  static final public Comando atribui() throws ParseException {
+                     Simbolo simb; Token t; LinkedList<Item> listaExp; Comando com;
     t = jj_consume_token(IDENT);
                 simb = new Simbolo(t.image);
                 tabela.inclui(simb);
     jj_consume_token(ATRIB);
     listaExp = expressao();
-                System.out.println(listaExp);
+                //System.out.println(listaExp);
+                com = new Comando('A',t.image,listaExp);
+                {if (true) return com;}
+    throw new Error("Missing return statement in function");
   }
 
   static final public LinkedList<Item> expressao() throws ParseException {
@@ -107,11 +126,10 @@ public class cedilha implements cedilhaConstants {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IDENT:
       t = jj_consume_token(IDENT);
-         if(!tabela.isExiste(t.image))
-          System.out.println("Erro sem\u00e2ntico \u005cn A vari\u00e1vel "+t.image+
-                             " n\u00e3o foi inicializada");
-         item = new Item('v',t.image);
-         {if (true) return item;}
+                if(!tabela.isExiste(t.image))
+                System.out.println("Erro sem\u00e2ntico \u005cn A vari\u00e1vel "+t.image+" n\u00e3o foi inicializada");
+                item = new Item('v',t.image);
+                {if (true) return item;}
       break;
     case UM:
     case DOIS:
@@ -126,8 +144,8 @@ public class cedilha implements cedilhaConstants {
     case VINTE:
     case TRINTA:
       valorNumero = numero();
-         item = new Item('n',""+valorNumero);
-         {if (true) return item;}
+                item = new Item('n',""+valorNumero);
+                {if (true) return item;}
       break;
     default:
       jj_la1[3] = jj_gen;
