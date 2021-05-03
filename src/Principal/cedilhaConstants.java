@@ -11,39 +11,57 @@ public interface CedilhaConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int VARIAVEIS = 8;
+  int ATRIB = 8;
   /** RegularExpression Id. */
-  int ARQ = 9;
+  int IF = 9;
   /** RegularExpression Id. */
-  int INT = 10;
+  int ELSE = 10;
   /** RegularExpression Id. */
-  int MAIS = 11;
+  int FIMIF = 11;
   /** RegularExpression Id. */
-  int MENOS = 12;
+  int WHILE = 12;
   /** RegularExpression Id. */
-  int MULTIPLICACAO = 13;
+  int FIMWHILE = 13;
   /** RegularExpression Id. */
-  int DIVISAO = 14;
+  int CONCAT = 14;
   /** RegularExpression Id. */
-  int POTENCIA = 15;
+  int FIMLINHA = 15;
   /** RegularExpression Id. */
-  int MAIOR = 16;
+  int VARIAVEIS = 16;
   /** RegularExpression Id. */
-  int MENOR = 17;
+  int ARQ = 17;
   /** RegularExpression Id. */
-  int MAIORIGUAL = 18;
+  int INT = 18;
   /** RegularExpression Id. */
-  int MENORIGUAL = 19;
+  int STR = 19;
   /** RegularExpression Id. */
-  int IGUAL = 20;
+  int MAIS = 20;
   /** RegularExpression Id. */
-  int DIFERENTE = 21;
+  int MENOS = 21;
   /** RegularExpression Id. */
-  int E = 22;
+  int MULTIPLICACAO = 22;
   /** RegularExpression Id. */
-  int OU = 23;
+  int DIVISAO = 23;
   /** RegularExpression Id. */
-  int NAO = 24;
+  int POTENCIA = 24;
+  /** RegularExpression Id. */
+  int MAIOR = 25;
+  /** RegularExpression Id. */
+  int MENOR = 26;
+  /** RegularExpression Id. */
+  int MAIORIGUAL = 27;
+  /** RegularExpression Id. */
+  int MENORIGUAL = 28;
+  /** RegularExpression Id. */
+  int IGUAL = 29;
+  /** RegularExpression Id. */
+  int DIFERENTE = 30;
+  /** RegularExpression Id. */
+  int E = 31;
+  /** RegularExpression Id. */
+  int OU = 32;
+  /** RegularExpression Id. */
+  int NAO = 33;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -60,9 +78,18 @@ public interface CedilhaConstants {
     "\"/*\"",
     "\"*/\"",
     "<token of kind 7>",
+    "\"=\"",
+    "\"SeNaoForIsso\"",
+    "\"EhIsso\"",
+    "\"FimDisso\"",
+    "\"RodeAteQue\"",
+    "\"Volta\"",
+    "\".\"",
+    "\";\"",
     "<VARIAVEIS>",
     "<ARQ>",
     "<INT>",
+    "<STR>",
     "\"+\"",
     "\"-\"",
     "\"*\"",

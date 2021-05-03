@@ -35,21 +35,33 @@ SKIP : /* Comentários */
    | <~[]>
 }
 
-TOKEN: /* Regra varáveis*/ {
-  < VARIAVEIS: (["a","e","i","o","u"]){3} > |
-  < ARQ:    "\""
-            ((~[".", ":", ";", "\\"]) {1,8}
+TOKEN: /* Regras gerais */ {
+  <ATRIB: "=">
+| <IF: "SeNaoForIsso" >
+| <ELSE: "EhIsso" >
+| <FIMIF: "FimDisso" >
+| <WHILE: "RodeAteQue" >
+| <FIMWHILE: "Volta" >
+| <CONCAT: "." >
+| <FIMLINHA: ";" >
+}
+
+TOKEN: /* Regra varáveis */ {
+  < VARIAVEIS: (["a"-"z"]){3,} >
+| < ARQ:    "\""
+            ((~[".", ":", ";", "\\"]) {3,}
             ( "." (~[".", ":", ";", "\\"]){1,3})?)
             "\"" >
 }
 
-TOKEN : /* Tipos de varáveis*/
+TOKEN : /* Tipos de varáveis */
 {
-  < INT:  (["0"-"9"])+("L"|"l")? >
+  < INT:  (["0"-"9"])+ >
+| < STR:  "\""(["a"-"z","A"-"Z"])*"\"" >
 }
 
 
-TOKEN : /* Operadores Matematicos*/
+TOKEN : /* Operadores Matematicos */
 {
       < MAIS: "+" >
 |     < MENOS: "-" >
@@ -58,7 +70,7 @@ TOKEN : /* Operadores Matematicos*/
 |     < POTENCIA: "^" >
 }
 
-TOKEN : /* Operadores Relacionais*/
+TOKEN : /* Operadores Relacionais */
 {
       < MAIOR: ">" >
 |     < MENOR: "<" >
@@ -68,7 +80,7 @@ TOKEN : /* Operadores Relacionais*/
 |     < DIFERENTE: "!=" >
 }
 
-TOKEN : /* Operadores Lógicos*/
+TOKEN : /* Operadores Lógicos */
 {
       < E: "&" >
 |     < OU: "||" >

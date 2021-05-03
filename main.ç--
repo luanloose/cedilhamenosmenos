@@ -1,7 +1,6 @@
 "teste.doc"
 aei oua
-_valor _x
-123 456L
+123
 /* isto é um comentário
 de várias
 linhas */
@@ -15,4 +14,13 @@ linhas */
 >
 <
 ^
-break Break BREAK
+SeNaoForIsso
+EhIsso
+FimDisso
+RodeAteQue
+Volta
+.
+testetring
+dasdas 
+asdsss
+"tgse"
