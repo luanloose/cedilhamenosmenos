@@ -23,32 +23,56 @@ public class Cedilha {
 
 PARSER_END(Cedilha)
 
-SKIP : { " " | "\t" | "\r" | "\n" }
+SKIP : { " " | "\t" | "\r" | "\n"}
 
-SKIP : {
-   "/*" : comentario
+SKIP : /* Comentários */
+{
+	"/*" : comentario
 }
 
 <comentario> SKIP: {
-   "*/" : DEFAULT |
-   <~[]>
+   "*/" : DEFAULT
+   | <~[]>
 }
 
-TOKEN [IGNORE_CASE] : {
-  < BREAK: "break" >
-} 
-
-TOKEN : {
-  < IDENT: "_"(["a"-"z","A"-"Z","_","0"-"9"] )* > |
-  < INT:  (["0"-"9"])+("L"|"l")? >
-}
-
-TOKEN: {
-  < VOGAIS: (["a","e","i","o","u"]){3} > |
+TOKEN: /* Regra varáveis*/ {
+  < VARIAVEIS: (["a","e","i","o","u"]){3} > |
   < ARQ:    "\""
             ((~[".", ":", ";", "\\"]) {1,8}
             ( "." (~[".", ":", ";", "\\"]){1,3})?)
             "\"" >
+}
+
+TOKEN : /* Tipos de varáveis*/
+{
+  < INT:  (["0"-"9"])+("L"|"l")? >
+}
+
+
+TOKEN : /* Operadores Matematicos*/
+{
+      < MAIS: "+" >
+|     < MENOS: "-" >
+|     < MULTIPLICACAO: "*" >
+|     < DIVISAO: "/" >
+|     < POTENCIA: "^" >
+}
+
+TOKEN : /* Operadores Relacionais*/
+{
+      < MAIOR: ">" >
+|     < MENOR: "<" >
+|     < MAIORIGUAL: "=>" >
+|     < MENORIGUAL: "<=" >
+|     < IGUAL: "==" >
+|     < DIFERENTE: "!=" >
+}
+
+TOKEN : /* Operadores Lógicos*/
+{
+      < E: "&" >
+|     < OU: "||" >
+|     < NAO: "!" >
 }
 
 JAVACODE void S()

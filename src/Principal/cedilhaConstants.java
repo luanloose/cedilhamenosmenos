@@ -11,15 +11,39 @@ public interface CedilhaConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int BREAK = 8;
+  int VARIAVEIS = 8;
   /** RegularExpression Id. */
-  int IDENT = 9;
+  int ARQ = 9;
   /** RegularExpression Id. */
   int INT = 10;
   /** RegularExpression Id. */
-  int VOGAIS = 11;
+  int MAIS = 11;
   /** RegularExpression Id. */
-  int ARQ = 12;
+  int MENOS = 12;
+  /** RegularExpression Id. */
+  int MULTIPLICACAO = 13;
+  /** RegularExpression Id. */
+  int DIVISAO = 14;
+  /** RegularExpression Id. */
+  int POTENCIA = 15;
+  /** RegularExpression Id. */
+  int MAIOR = 16;
+  /** RegularExpression Id. */
+  int MENOR = 17;
+  /** RegularExpression Id. */
+  int MAIORIGUAL = 18;
+  /** RegularExpression Id. */
+  int MENORIGUAL = 19;
+  /** RegularExpression Id. */
+  int IGUAL = 20;
+  /** RegularExpression Id. */
+  int DIFERENTE = 21;
+  /** RegularExpression Id. */
+  int E = 22;
+  /** RegularExpression Id. */
+  int OU = 23;
+  /** RegularExpression Id. */
+  int NAO = 24;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -36,11 +60,23 @@ public interface CedilhaConstants {
     "\"/*\"",
     "\"*/\"",
     "<token of kind 7>",
-    "\"break\"",
-    "<IDENT>",
-    "<INT>",
-    "<VOGAIS>",
+    "<VARIAVEIS>",
     "<ARQ>",
+    "<INT>",
+    "\"+\"",
+    "\"-\"",
+    "\"*\"",
+    "\"/\"",
+    "\"^\"",
+    "\">\"",
+    "\"<\"",
+    "\"=>\"",
+    "\"<=\"",
+    "\"==\"",
+    "\"!=\"",
+    "\"&\"",
+    "\"||\"",
+    "\"!\"",
   };
 
 }
