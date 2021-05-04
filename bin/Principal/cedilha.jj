@@ -23,43 +23,56 @@ public class Cedilha {
 
 PARSER_END(Cedilha)
 
-SKIP : { " " | "\t" | "\r" | "\n"}
+SKIP : { " " | "\t" | "\r" | "\n" | "_" | ","}
 
 SKIP : /* Comentários */
 {
-	"/*" : comentario
+	"/*" : BLOCO_COMENTARIO
+| "//" : LINHA_COMENTARIO
 }
 
-<comentario> SKIP: {
+<BLOCO_COMENTARIO> SKIP: {
    "*/" : DEFAULT
    | <~[]>
 }
 
+<LINHA_COMENTARIO> SKIP: {
+   "\n": DEFAULT
+   | <~[]>
+}
+
+
 TOKEN: /* Regras gerais */ {
-  <ATRIB: "=">
-| <IF: "SeNaoForIsso" >
+ <IF: "SeNaoForIsso" >
 | <ELSE: "EhIsso" >
 | <FIMIF: "FimDisso" >
 | <WHILE: "RodeAteQue" >
 | <FIMWHILE: "Volta" >
+| <INICIOPROG: "Inicia" >
+| <FIMPROG: "Termina" >
+| <INTEIRO: "Inteiro" >
+| <PALAVRA: "Palavra" >
+| <MOSTRA: "Mostra" >
+| <ENTRADA: "Entrada" >
+}
+
+TOKEN: /* Simbolos */ {
+  <ATRIB: "=">
 | <CONCAT: "." >
 | <FIMLINHA: ";" >
+| <PARENTESQ: "(" >
+| <PARENTDIR: ")" >
 }
 
 TOKEN: /* Regra varáveis */ {
-  < VARIAVEIS: (["a"-"z"]){3,} >
-| < ARQ:    "\""
-            ((~[".", ":", ";", "\\"]) {3,}
-            ( "." (~[".", ":", ";", "\\"]){1,3})?)
-            "\"" >
+  < VARIAVEIS: "$"(["a"-"z","0"-"9"]){1,} >
 }
 
 TOKEN : /* Tipos de varáveis */
 {
-  < INT:  (["0"-"9"])+ >
-| < STR:  "\""(["a"-"z","A"-"Z"])*"\"" >
+  < NUMEROS:  (["0"-"9"])+ >
+| < PALAVRAS:  "\""(["a"-"z","A"-"Z",".", ","," ", ":", ";","!","-","?","0"-"9"])* "\"" >
 }
-
 
 TOKEN : /* Operadores Matematicos */
 {

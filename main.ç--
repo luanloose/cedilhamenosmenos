@@ -1,6 +1,6 @@
 "teste.doc"
-aei oua
-123
+$aei $oua
+$123
 /* isto é um comentário
 de várias
 linhas */
@@ -20,7 +20,8 @@ FimDisso
 RodeAteQue
 Volta
 .
-testetring
-dasdas 
-asdsss
+$testetring
+$dasdas 
+$asdsss
 "tgse"
+//teste comentario

@@ -11,62 +11,78 @@ public interface CedilhaConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int ATRIB = 8;
+  int IF = 13;
   /** RegularExpression Id. */
-  int IF = 9;
+  int ELSE = 14;
   /** RegularExpression Id. */
-  int ELSE = 10;
+  int FIMIF = 15;
   /** RegularExpression Id. */
-  int FIMIF = 11;
+  int WHILE = 16;
   /** RegularExpression Id. */
-  int WHILE = 12;
+  int FIMWHILE = 17;
   /** RegularExpression Id. */
-  int FIMWHILE = 13;
+  int INICIOPROG = 18;
   /** RegularExpression Id. */
-  int CONCAT = 14;
+  int FIMPROG = 19;
   /** RegularExpression Id. */
-  int FIMLINHA = 15;
+  int INTEIRO = 20;
   /** RegularExpression Id. */
-  int VARIAVEIS = 16;
+  int PALAVRA = 21;
   /** RegularExpression Id. */
-  int ARQ = 17;
+  int MOSTRA = 22;
   /** RegularExpression Id. */
-  int INT = 18;
+  int ENTRADA = 23;
   /** RegularExpression Id. */
-  int STR = 19;
+  int ATRIB = 24;
   /** RegularExpression Id. */
-  int MAIS = 20;
+  int CONCAT = 25;
   /** RegularExpression Id. */
-  int MENOS = 21;
+  int FIMLINHA = 26;
   /** RegularExpression Id. */
-  int MULTIPLICACAO = 22;
+  int PARENTESQ = 27;
   /** RegularExpression Id. */
-  int DIVISAO = 23;
+  int PARENTDIR = 28;
   /** RegularExpression Id. */
-  int POTENCIA = 24;
+  int VARIAVEIS = 29;
   /** RegularExpression Id. */
-  int MAIOR = 25;
+  int NUMEROS = 30;
   /** RegularExpression Id. */
-  int MENOR = 26;
+  int PALAVRAS = 31;
   /** RegularExpression Id. */
-  int MAIORIGUAL = 27;
+  int MAIS = 32;
   /** RegularExpression Id. */
-  int MENORIGUAL = 28;
+  int MENOS = 33;
   /** RegularExpression Id. */
-  int IGUAL = 29;
+  int MULTIPLICACAO = 34;
   /** RegularExpression Id. */
-  int DIFERENTE = 30;
+  int DIVISAO = 35;
   /** RegularExpression Id. */
-  int E = 31;
+  int POTENCIA = 36;
   /** RegularExpression Id. */
-  int OU = 32;
+  int MAIOR = 37;
   /** RegularExpression Id. */
-  int NAO = 33;
+  int MENOR = 38;
+  /** RegularExpression Id. */
+  int MAIORIGUAL = 39;
+  /** RegularExpression Id. */
+  int MENORIGUAL = 40;
+  /** RegularExpression Id. */
+  int IGUAL = 41;
+  /** RegularExpression Id. */
+  int DIFERENTE = 42;
+  /** RegularExpression Id. */
+  int E = 43;
+  /** RegularExpression Id. */
+  int OU = 44;
+  /** RegularExpression Id. */
+  int NAO = 45;
 
   /** Lexical state. */
   int DEFAULT = 0;
   /** Lexical state. */
-  int comentario = 1;
+  int BLOCO_COMENTARIO = 1;
+  /** Lexical state. */
+  int LINHA_COMENTARIO = 2;
 
   /** Literal token values. */
   String[] tokenImage = {
@@ -75,21 +91,33 @@ public interface CedilhaConstants {
     "\"\\t\"",
     "\"\\r\"",
     "\"\\n\"",
+    "\"_\"",
+    "\",\"",
     "\"/*\"",
+    "\"//\"",
     "\"*/\"",
-    "<token of kind 7>",
-    "\"=\"",
+    "<token of kind 10>",
+    "\"\\n\"",
+    "<token of kind 12>",
     "\"SeNaoForIsso\"",
     "\"EhIsso\"",
     "\"FimDisso\"",
     "\"RodeAteQue\"",
     "\"Volta\"",
+    "\"Inicia\"",
+    "\"Termina\"",
+    "\"Inteiro\"",
+    "\"Palavra\"",
+    "\"Mostra\"",
+    "\"Entrada\"",
+    "\"=\"",
     "\".\"",
     "\";\"",
+    "\"(\"",
+    "\")\"",
     "<VARIAVEIS>",
-    "<ARQ>",
-    "<INT>",
-    "<STR>",
+    "<NUMEROS>",
+    "<PALAVRAS>",
     "\"+\"",
     "\"-\"",
     "\"*\"",
