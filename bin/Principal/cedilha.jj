@@ -23,7 +23,7 @@ public class Cedilha {
 
 PARSER_END(Cedilha)
 
-SKIP : { " " | "\t" | "\r" | "\n" | "_" | ","}
+SKIP : { " " | "\t" | "\r" | "\n" | "_" }
 
 SKIP : /* Comentários */
 {
@@ -43,7 +43,7 @@ SKIP : /* Comentários */
 
 
 TOKEN: /* Regras gerais */ {
- <IF: "SeNaoForIsso" >
+  <IF: "SeNaoForIsso" >
 | <ELSE: "EhIsso" >
 | <FIMIF: "FimDisso" >
 | <WHILE: "RodeAteQue" >
@@ -56,36 +56,37 @@ TOKEN: /* Regras gerais */ {
 | <ENTRADA: "Entrada" >
 }
 
-TOKEN: /* Simbolos */ {
-  <ATRIB: "=">
-| <CONCAT: "." >
-| <FIMLINHA: ";" >
-| <PARENTESQ: "(" >
-| <PARENTDIR: ")" >
+TOKEN: /* Simbolos de Separação*/ {
+  < CONCAT: "." >
+| < FIMLINHA: ";" >
+| < PARENTESQ: "(" >
+| < PARENTDIR: ")" >
+| < VIRGULA: "," >
 }
 
 TOKEN: /* Regra varáveis */ {
-  < VARIAVEIS: "$"(["a"-"z","0"-"9"]){1,} >
+	< VARIAVEIS: "$"(["a"-"z","0"-"9"]){1,} >
 }
 
 TOKEN : /* Tipos de varáveis */
 {
-  < NUMEROS:  (["0"-"9"])+ >
-| < PALAVRAS:  "\""(["a"-"z","A"-"Z",".", ","," ", ":", ";","!","-","?","0"-"9"])* "\"" >
+	< NUMEROS:  (["0"-"9"])+ >
+|	< PALAVRAS:  "\""(~["\""] | "\\" "\"")*"\"" >
 }
 
 TOKEN : /* Operadores Matematicos */
 {
-      < MAIS: "+" >
-|     < MENOS: "-" >
-|     < MULTIPLICACAO: "*" >
+	< MAIS: "+" >
+|	< MENOS: "-" >
+|	< MULTIPLICACAO: "*" >
 |     < DIVISAO: "/" >
 |     < POTENCIA: "^" >
 }
 
 TOKEN : /* Operadores Relacionais */
 {
-      < MAIOR: ">" >
+	  < ATRIB: "=">
+|     < MAIOR: ">" >
 |     < MENOR: "<" >
 |     < MAIORIGUAL: "=>" >
 |     < MENORIGUAL: "<=" >
@@ -100,12 +101,138 @@ TOKEN : /* Operadores Lógicos */
 |     < NAO: "!" >
 }
 
-JAVACODE void S()
+//JAVACODE void S()
+//{
+//	Token t;
+//	do {
+//		t = getNextToken();
+//		System.out.println(tokenImage[t.kind]+"\t"+t.image);
+//	}
+//	while(t.kind != EOF);
+//}
+
+void inicio() : {}
 {
-	Token t;
-	do {
-		t = getNextToken();
-		System.out.println(tokenImage[t.kind]+"\t"+t.image);
-	}
-	while(t.kind != EOF);
+	<INICIOPROG> corpo() <FIMPROG> <EOF>
+}
+
+void corpo() : {}
+{
+    (declaraVar())* (comandos())*
+}	 
+
+void declaraVar() : {}
+{
+	( <NUMEROS> | <PALAVRAS> ) listaVar() <FIMLINHA>
+}
+
+void listaVar() : {}
+{
+	itemListaVar() (<VIRGULA> itemListaVar() )*
+}
+
+void itemListaVar() : {}
+{
+    <VARIAVEIS>(<ATRIB>exp())?
+}
+
+void comandos() : {}
+{
+	atribuicao() | SeNaoForIsso() | RodeAteQue() | Entrada() | Mostra()
+}
+
+void atribuicao() : {} 
+{
+	<VARIAVEIS><ATRIB>exp()<FIMLINHA>
+}
+
+Expressao exp() : {}
+{
+	expAuxiliar()
+}	
+
+void expAuxiliar() : {}
+{
+	termo()
+}	
+
+void termo() : {}
+{
+	termo1()(<OU> termo1())*	
+}
+
+void termo1() : {}
+{
+	termo2()(<E> termo2())*
+}
+
+void termo2() : {}
+{
+	termo3()((<MAIOR> | <MENOR> | <MAIORIGUAL> | <MENORIGUAL> | <DIFERENTE> | <IGUAL>) termo3())*
+}
+
+void  termo3() : {}
+{
+	termo4()( <MAIS> termo4()| <MENOS> termo4())*
+}
+
+void  termo4() : {}
+{
+	termo5()( <MULTIPLICACAO> termo5()| <DIVISAO> termo5())*
+}
+
+void  termo5() : {}
+{
+	termo6()( <POTENCIA> termo5())*
+}
+
+void  termo6() : {}
+{
+	(<NAO>)* termo7()
+}
+
+void termo7() : {}
+{
+	(<MENOS> |<MAIS>)? <NUMEROS>
+	|
+	 <VARIAVEIS>
+	| 
+	 <PALAVRAS>
+	| 
+	 <PARENTESQ> expAuxiliar() <PARENTDIR>
+}
+
+void SeNaoForIsso() : {}
+{
+	<IF> <PARENTESQ> exp() <PARENTDIR> (comandos())* (EhIsso())?
+}
+	     		
+void EhIsso() : {}
+{
+	<ELSE> (comandos())*<FIMIF>
+}
+
+void RodeAteQue() : {}
+{
+	 <WHILE> <PARENTESQ>exp()<PARENTDIR> (comandos())*<FIMWHILE>
+}
+
+void Entrada() : {}
+{
+	<ENTRADA> <PARENTESQ> corpoEntrada()<PARENTDIR> <FIMLINHA>
+}
+
+void corpoEntrada() : {}
+{
+	(<PALAVRAS> <VIRGULA>)?<VARIAVEIS>(<VIRGULA><VARIAVEIS>)*
+}
+
+void Mostra() : {}
+{
+	<MOSTRA> <PARENTESQ> corpoMostra() <PARENTDIR> <FIMLINHA>
+}
+
+void corpoMostra() : {}
+{	
+	<PALAVRAS> <VIRGULA> exp()
 }

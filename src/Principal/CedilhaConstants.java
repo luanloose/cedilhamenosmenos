@@ -11,53 +11,55 @@ public interface CedilhaConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int IF = 13;
+  int IF = 12;
   /** RegularExpression Id. */
-  int ELSE = 14;
+  int ELSE = 13;
   /** RegularExpression Id. */
-  int FIMIF = 15;
+  int FIMIF = 14;
   /** RegularExpression Id. */
-  int WHILE = 16;
+  int WHILE = 15;
   /** RegularExpression Id. */
-  int FIMWHILE = 17;
+  int FIMWHILE = 16;
   /** RegularExpression Id. */
-  int INICIOPROG = 18;
+  int INICIOPROG = 17;
   /** RegularExpression Id. */
-  int FIMPROG = 19;
+  int FIMPROG = 18;
   /** RegularExpression Id. */
-  int INTEIRO = 20;
+  int INTEIRO = 19;
   /** RegularExpression Id. */
-  int PALAVRA = 21;
+  int PALAVRA = 20;
   /** RegularExpression Id. */
-  int MOSTRA = 22;
+  int MOSTRA = 21;
   /** RegularExpression Id. */
-  int ENTRADA = 23;
+  int ENTRADA = 22;
   /** RegularExpression Id. */
-  int ATRIB = 24;
+  int CONCAT = 23;
   /** RegularExpression Id. */
-  int CONCAT = 25;
+  int FIMLINHA = 24;
   /** RegularExpression Id. */
-  int FIMLINHA = 26;
+  int PARENTESQ = 25;
   /** RegularExpression Id. */
-  int PARENTESQ = 27;
+  int PARENTDIR = 26;
   /** RegularExpression Id. */
-  int PARENTDIR = 28;
+  int VIRGULA = 27;
   /** RegularExpression Id. */
-  int VARIAVEIS = 29;
+  int VARIAVEIS = 28;
   /** RegularExpression Id. */
-  int NUMEROS = 30;
+  int NUMEROS = 29;
   /** RegularExpression Id. */
-  int PALAVRAS = 31;
+  int PALAVRAS = 30;
   /** RegularExpression Id. */
-  int MAIS = 32;
+  int MAIS = 31;
   /** RegularExpression Id. */
-  int MENOS = 33;
+  int MENOS = 32;
   /** RegularExpression Id. */
-  int MULTIPLICACAO = 34;
+  int MULTIPLICACAO = 33;
   /** RegularExpression Id. */
-  int DIVISAO = 35;
+  int DIVISAO = 34;
   /** RegularExpression Id. */
-  int POTENCIA = 36;
+  int POTENCIA = 35;
+  /** RegularExpression Id. */
+  int ATRIB = 36;
   /** RegularExpression Id. */
   int MAIOR = 37;
   /** RegularExpression Id. */
@@ -92,13 +94,12 @@ public interface CedilhaConstants {
     "\"\\r\"",
     "\"\\n\"",
     "\"_\"",
-    "\",\"",
     "\"/*\"",
     "\"//\"",
     "\"*/\"",
-    "<token of kind 10>",
+    "<token of kind 9>",
     "\"\\n\"",
-    "<token of kind 12>",
+    "<token of kind 11>",
     "\"SeNaoForIsso\"",
     "\"EhIsso\"",
     "\"FimDisso\"",
@@ -110,11 +111,11 @@ public interface CedilhaConstants {
     "\"Palavra\"",
     "\"Mostra\"",
     "\"Entrada\"",
-    "\"=\"",
     "\".\"",
     "\";\"",
     "\"(\"",
     "\")\"",
+    "\",\"",
     "<VARIAVEIS>",
     "<NUMEROS>",
     "<PALAVRAS>",
@@ -123,6 +124,7 @@ public interface CedilhaConstants {
     "\"*\"",
     "\"/\"",
     "\"^\"",
+    "\"=\"",
     "\">\"",
     "\"<\"",
     "\"=>\"",

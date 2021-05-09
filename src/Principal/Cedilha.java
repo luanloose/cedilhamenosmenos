@@ -13,13 +13,479 @@ public class Cedilha implements CedilhaConstants {
                 }
         }
 
-  static void S() throws ParseException {
-        Token t;
-        do {
-                t = getNextToken();
-                System.out.println(tokenImage[t.kind]+"\u005ct"+t.image);
+//JAVACODE void S()
+//{
+//	Token t;
+//	do {
+//		t = getNextToken();
+//		System.out.println(tokenImage[t.kind]+"\t"+t.image);
+//	}
+//	while(t.kind != EOF);
+//}
+  static final public void inicio() throws ParseException {
+    jj_consume_token(INICIOPROG);
+    corpo();
+    jj_consume_token(FIMPROG);
+    jj_consume_token(0);
+  }
+
+  static final public void corpo() throws ParseException {
+    label_1:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case NUMEROS:
+      case PALAVRAS:
+        ;
+        break;
+      default:
+        jj_la1[0] = jj_gen;
+        break label_1;
+      }
+      declaraVar();
+    }
+    label_2:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case IF:
+      case WHILE:
+      case MOSTRA:
+      case ENTRADA:
+      case VARIAVEIS:
+        ;
+        break;
+      default:
+        jj_la1[1] = jj_gen;
+        break label_2;
+      }
+      comandos();
+    }
+  }
+
+  static final public void declaraVar() throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case NUMEROS:
+      jj_consume_token(NUMEROS);
+      break;
+    case PALAVRAS:
+      jj_consume_token(PALAVRAS);
+      break;
+    default:
+      jj_la1[2] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    listaVar();
+    jj_consume_token(FIMLINHA);
+  }
+
+  static final public void listaVar() throws ParseException {
+    itemListaVar();
+    label_3:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case VIRGULA:
+        ;
+        break;
+      default:
+        jj_la1[3] = jj_gen;
+        break label_3;
+      }
+      jj_consume_token(VIRGULA);
+      itemListaVar();
+    }
+  }
+
+  static final public void itemListaVar() throws ParseException {
+    jj_consume_token(VARIAVEIS);
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case ATRIB:
+      jj_consume_token(ATRIB);
+      exp();
+      break;
+    default:
+      jj_la1[4] = jj_gen;
+      ;
+    }
+  }
+
+  static final public void comandos() throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case VARIAVEIS:
+      atribuicao();
+      break;
+    case IF:
+      SeNaoForIsso();
+      break;
+    case WHILE:
+      RodeAteQue();
+      break;
+    case ENTRADA:
+      Entrada();
+      break;
+    case MOSTRA:
+      Mostra();
+      break;
+    default:
+      jj_la1[5] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+  }
+
+  static final public void atribuicao() throws ParseException {
+    jj_consume_token(VARIAVEIS);
+    jj_consume_token(ATRIB);
+    exp();
+    jj_consume_token(FIMLINHA);
+  }
+
+  static final public Expressao exp() throws ParseException {
+    expAuxiliar();
+  }
+
+  static final public void expAuxiliar() throws ParseException {
+    termo();
+  }
+
+  static final public void termo() throws ParseException {
+    termo1();
+    label_4:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case OU:
+        ;
+        break;
+      default:
+        jj_la1[6] = jj_gen;
+        break label_4;
+      }
+      jj_consume_token(OU);
+      termo1();
+    }
+  }
+
+  static final public void termo1() throws ParseException {
+    termo2();
+    label_5:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case E:
+        ;
+        break;
+      default:
+        jj_la1[7] = jj_gen;
+        break label_5;
+      }
+      jj_consume_token(E);
+      termo2();
+    }
+  }
+
+  static final public void termo2() throws ParseException {
+    termo3();
+    label_6:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case MAIOR:
+      case MENOR:
+      case MAIORIGUAL:
+      case MENORIGUAL:
+      case IGUAL:
+      case DIFERENTE:
+        ;
+        break;
+      default:
+        jj_la1[8] = jj_gen;
+        break label_6;
+      }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case MAIOR:
+        jj_consume_token(MAIOR);
+        break;
+      case MENOR:
+        jj_consume_token(MENOR);
+        break;
+      case MAIORIGUAL:
+        jj_consume_token(MAIORIGUAL);
+        break;
+      case MENORIGUAL:
+        jj_consume_token(MENORIGUAL);
+        break;
+      case DIFERENTE:
+        jj_consume_token(DIFERENTE);
+        break;
+      case IGUAL:
+        jj_consume_token(IGUAL);
+        break;
+      default:
+        jj_la1[9] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+      termo3();
+    }
+  }
+
+  static final public void termo3() throws ParseException {
+    termo4();
+    label_7:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case MAIS:
+      case MENOS:
+        ;
+        break;
+      default:
+        jj_la1[10] = jj_gen;
+        break label_7;
+      }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case MAIS:
+        jj_consume_token(MAIS);
+        termo4();
+        break;
+      case MENOS:
+        jj_consume_token(MENOS);
+        termo4();
+        break;
+      default:
+        jj_la1[11] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+    }
+  }
+
+  static final public void termo4() throws ParseException {
+    termo5();
+    label_8:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case MULTIPLICACAO:
+      case DIVISAO:
+        ;
+        break;
+      default:
+        jj_la1[12] = jj_gen;
+        break label_8;
+      }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case MULTIPLICACAO:
+        jj_consume_token(MULTIPLICACAO);
+        termo5();
+        break;
+      case DIVISAO:
+        jj_consume_token(DIVISAO);
+        termo5();
+        break;
+      default:
+        jj_la1[13] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+    }
+  }
+
+  static final public void termo5() throws ParseException {
+    termo6();
+    label_9:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case POTENCIA:
+        ;
+        break;
+      default:
+        jj_la1[14] = jj_gen;
+        break label_9;
+      }
+      jj_consume_token(POTENCIA);
+      termo5();
+    }
+  }
+
+  static final public void termo6() throws ParseException {
+    label_10:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case NAO:
+        ;
+        break;
+      default:
+        jj_la1[15] = jj_gen;
+        break label_10;
+      }
+      jj_consume_token(NAO);
+    }
+    termo7();
+  }
+
+  static final public void termo7() throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case NUMEROS:
+    case MAIS:
+    case MENOS:
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case MAIS:
+      case MENOS:
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case MENOS:
+          jj_consume_token(MENOS);
+          break;
+        case MAIS:
+          jj_consume_token(MAIS);
+          break;
+        default:
+          jj_la1[16] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
         }
-        while(t.kind != EOF);
+        break;
+      default:
+        jj_la1[17] = jj_gen;
+        ;
+      }
+      jj_consume_token(NUMEROS);
+      break;
+    case VARIAVEIS:
+      jj_consume_token(VARIAVEIS);
+      break;
+    case PALAVRAS:
+      jj_consume_token(PALAVRAS);
+      break;
+    case PARENTESQ:
+      jj_consume_token(PARENTESQ);
+      expAuxiliar();
+      jj_consume_token(PARENTDIR);
+      break;
+    default:
+      jj_la1[18] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+  }
+
+  static final public void SeNaoForIsso() throws ParseException {
+    jj_consume_token(IF);
+    jj_consume_token(PARENTESQ);
+    exp();
+    jj_consume_token(PARENTDIR);
+    label_11:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case IF:
+      case WHILE:
+      case MOSTRA:
+      case ENTRADA:
+      case VARIAVEIS:
+        ;
+        break;
+      default:
+        jj_la1[19] = jj_gen;
+        break label_11;
+      }
+      comandos();
+    }
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case ELSE:
+      EhIsso();
+      break;
+    default:
+      jj_la1[20] = jj_gen;
+      ;
+    }
+  }
+
+  static final public void EhIsso() throws ParseException {
+    jj_consume_token(ELSE);
+    label_12:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case IF:
+      case WHILE:
+      case MOSTRA:
+      case ENTRADA:
+      case VARIAVEIS:
+        ;
+        break;
+      default:
+        jj_la1[21] = jj_gen;
+        break label_12;
+      }
+      comandos();
+    }
+    jj_consume_token(FIMIF);
+  }
+
+  static final public void RodeAteQue() throws ParseException {
+    jj_consume_token(WHILE);
+    jj_consume_token(PARENTESQ);
+    exp();
+    jj_consume_token(PARENTDIR);
+    label_13:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case IF:
+      case WHILE:
+      case MOSTRA:
+      case ENTRADA:
+      case VARIAVEIS:
+        ;
+        break;
+      default:
+        jj_la1[22] = jj_gen;
+        break label_13;
+      }
+      comandos();
+    }
+    jj_consume_token(FIMWHILE);
+  }
+
+  static final public void Entrada() throws ParseException {
+    jj_consume_token(ENTRADA);
+    jj_consume_token(PARENTESQ);
+    corpoEntrada();
+    jj_consume_token(PARENTDIR);
+    jj_consume_token(FIMLINHA);
+  }
+
+  static final public void corpoEntrada() throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case PALAVRAS:
+      jj_consume_token(PALAVRAS);
+      jj_consume_token(VIRGULA);
+      break;
+    default:
+      jj_la1[23] = jj_gen;
+      ;
+    }
+    jj_consume_token(VARIAVEIS);
+    label_14:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case VIRGULA:
+        ;
+        break;
+      default:
+        jj_la1[24] = jj_gen;
+        break label_14;
+      }
+      jj_consume_token(VIRGULA);
+      jj_consume_token(VARIAVEIS);
+    }
+  }
+
+  static final public void Mostra() throws ParseException {
+    jj_consume_token(MOSTRA);
+    jj_consume_token(PARENTESQ);
+    corpoMostra();
+    jj_consume_token(PARENTDIR);
+    jj_consume_token(FIMLINHA);
+  }
+
+  static final public void corpoMostra() throws ParseException {
+    jj_consume_token(PALAVRAS);
+    jj_consume_token(VIRGULA);
+    exp();
   }
 
   static private boolean jj_initialized_once = false;
@@ -32,7 +498,7 @@ public class Cedilha implements CedilhaConstants {
   static public Token jj_nt;
   static private int jj_ntk;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[0];
+  static final private int[] jj_la1 = new int[25];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -40,10 +506,10 @@ public class Cedilha implements CedilhaConstants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {};
+      jj_la1_0 = new int[] {0x60000000,0x10609000,0x60000000,0x8000000,0x0,0x10609000,0x0,0x0,0x0,0x0,0x80000000,0x80000000,0x0,0x0,0x0,0x0,0x80000000,0x80000000,0xf2000000,0x10609000,0x2000,0x10609000,0x10609000,0x40000000,0x8000000,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {};
+      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x10,0x0,0x1000,0x800,0x7e0,0x7e0,0x1,0x1,0x6,0x6,0x8,0x2000,0x1,0x1,0x1,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
 
   /** Constructor with InputStream. */
@@ -64,7 +530,7 @@ public class Cedilha implements CedilhaConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 0; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 25; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -78,7 +544,7 @@ public class Cedilha implements CedilhaConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 0; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 25; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -95,7 +561,7 @@ public class Cedilha implements CedilhaConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 0; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 25; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -105,7 +571,7 @@ public class Cedilha implements CedilhaConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 0; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 25; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -121,7 +587,7 @@ public class Cedilha implements CedilhaConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 0; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 25; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -130,7 +596,7 @@ public class Cedilha implements CedilhaConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 0; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 25; i++) jj_la1[i] = -1;
   }
 
   static private Token jj_consume_token(int kind) throws ParseException {
@@ -186,7 +652,7 @@ public class Cedilha implements CedilhaConstants {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 0; i++) {
+    for (int i = 0; i < 25; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
