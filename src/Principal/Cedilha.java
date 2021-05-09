@@ -6,7 +6,7 @@ public class Cedilha implements CedilhaConstants {
         public static void main(String args[])  throws ParseException  {
                 try {
                         Cedilha x = new Cedilha(new FileInputStream("main.\u00e7--"));
-                        x.S();
+                        //x.S(); 
                 }
                 catch(FileNotFoundException e) {
                         System.out.println("Arquivo n\u00e3o encontrado");
