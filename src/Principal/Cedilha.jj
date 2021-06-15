@@ -8,11 +8,17 @@ options {
 PARSER_BEGIN(Cedilha)
 package Principal;
 import java.io.*;
+import java.util.*;
 
 public class Cedilha {
+	static public boolean erro = false;
+	static HashMap<Simbolo> tab = new HashMap<Simbolo>();
+
 	public static void main(String args[])  throws ParseException  {
 		try {
 			Cedilha x = new Cedilha(new FileInputStream("main.ç--"));
+			x.inicio();
+			System.out.println(tab);
 			//x.S(); 
 		}
 		catch(FileNotFoundException e) {
@@ -121,14 +127,28 @@ void corpo() : {}
     (declaraVar())* (comandos())*
 }	 
 
-void declaraVar() : {}
+void declaraVar() : { }
 {
-	( <NUMEROS> | <PALAVRAS> ) listaVar() <FIMLINHA>
+	( <NUMEROS> | <PALAVRAS> )
+	listaVar() <FIMLINHA>
 }
 
-void listaVar() : {}
+void listaVar() : {Simbolo simb; Token t;}
 {
-	itemListaVar() (<VIRGULA> itemListaVar() )*
+	t = itemListaVar()
+	{
+		simb = new Simbolo();
+		simb.setNome(t.image);
+		tab.inclui(simb.nome, simb);
+	}
+   (
+     <VIRGULA> t = itemListaVar()
+     {
+         simb = new Simbolo();
+         simb.setNome(t.image);
+         tab.inclui(simb.getNome(), simb);
+      }
+   )*
 }
 
 void itemListaVar() : {}
@@ -171,22 +191,22 @@ void termo2() : {}
 	termo3()((<MAIOR> | <MENOR> | <MAIORIGUAL> | <MENORIGUAL> | <DIFERENTE> | <IGUAL>) termo3())*
 }
 
-void  termo3() : {}
+void termo3() : {}
 {
 	termo4()( <MAIS> termo4()| <MENOS> termo4())*
 }
 
-void  termo4() : {}
+void termo4() : {}
 {
 	termo5()( <MULTIPLICACAO> termo5()| <DIVISAO> termo5())*
 }
 
-void  termo5() : {}
+void termo5() : {}
 {
 	termo6()( <POTENCIA> termo5())*
 }
 
-void  termo6() : {}
+void termo6() : {}
 {
 	(<NAO>)* termo7()
 }
