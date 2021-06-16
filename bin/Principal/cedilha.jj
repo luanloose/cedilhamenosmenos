@@ -117,142 +117,417 @@ TOKEN : /* Operadores Lógicos */
 //	while(t.kind != EOF);
 //}
 
-void inicio() : {}
+void inicio(List<Comando> lista) : {}
 {
-	<INICIOPROG> corpo() <FIMPROG> <EOF>
+	<INICIOPROG> corpo(lista) <FIMPROG> <EOF>
 }
 
-void corpo() : {}
+void corpo(List<Comando> lista) : {}
 {
-    (declaraVar())* (comandos())*
+    (declaraVar())* (comandos(lista))*
+    {
+      System.out.println(lista);
+   }
 }	 
 
-void declaraVar() : { }
+void declaraVar() : { char tp; }
 {
-	( <NUMEROS> | <PALAVRAS> )
-	listaVar() <FIMLINHA>
+	( <NUMEROS> {tp='n';} | <PALAVRAS> {tp='s';})
+	listaVar(tp) <FIMLINHA>
 }
 
-void listaVar() : {Simbolo simb; Token t;}
+void listaVar(char tp) : {}
 {
-	t = itemListaVar()
-	{
-		simb = new Simbolo();
-		simb.setNome(t.image);
-		tab.inclui(simb.nome, simb);
+	itemListaVar(tp)(<VIRGULA> itemListaVar(tp))*
+}
+
+void itemListaVar(char tp) : {Simbolo simb; Token t; Expressao expressao; boolean tipoCerto;}
+{
+    t=<VARIAVEIS>
+	{//acao semantica para verificar se variavel ta sendo declarada pela segunda vez
+		if(tabela.isExiste(t.image))
+			System.err.println("ERRO!\n Erro Semântico: A váriavel \"" + t.image + "\" foi declarada mais de uma vez\n");
+		else{//ação semantica para insercao na tabela de variaveis (insere variavel na tabela se ainda não foi declarada)
+			simb = new Simbolo(t.image, tp);
+			tabela.inclui(simb);
+		}	
 	}
-   (
-     <VIRGULA> t = itemListaVar()
-     {
-         simb = new Simbolo();
-         simb.setNome(t.image);
-         tab.inclui(simb.getNome(), simb);
-      }
-   )*
+	// Variavel pode ser inicializada ou não	 
+	(
+		<ATRIB> expressao = exp()
+		{//Ação semântica para verificar se a váriavel está recebendo uma expressão compatível com seu tipo	
+			if(tp == 'n')
+				tipoCerto = expressao.isExpressaoNumerica(tabela);
+			else
+				tipoCerto = expressao.isExpressaoTexto();
+		
+			if(!tipoCerto)
+				System.err.println("ERRO!\n Erro Semântico: O tipo da variavel \"" + t.image + "\" não é compatível com a expressão atribuida"+"\n");
+						
+		}
+		{// Ação semãntica para incluir na tabela que variavel foi inicializada
+			tabela.inicializaIdent(t.image);
+	    }		
+	)?
 }
 
-void itemListaVar() : {}
+void comandos(List<Comando> lista) : {Comando comando = new Comando('A');Token t; Expressao expressao; boolean tipoCerto; boolean foiDeclarada=true;} 
 {
-    <VARIAVEIS>(<ATRIB>exp())?
+	atribuicao(lista) | SeNaoForIsso(lista) | RodeAteQue(lista) | Entrada(lista) | Mostra(lista)
 }
 
-void comandos() : {}
+void atribuicao(List<Comando> lista) : {Comando comando = new Comando('A');Token t; Expressao expressao; boolean tipoCerto; boolean foiDeclarada=true;} 
 {
-	atribuicao() | SeNaoForIsso() | RodeAteQue() | Entrada() | Mostra()
+	t=<VARIAVEIS>
+	{comando.setRef1(t.image);}
+	{// Ação semãntica para verificar se variavel foi declarada 
+		if(!tabela.isExiste(t.image)){
+			System.err.println("ERRO!\n Erro Semantico: A váriavel \"" + t.image + "\" não foi declarada\n");
+			foiDeclarada = false;
+		}	
+	}
+	
+	<ATRIB> 
+	
+	expressao = exp()
+	
+	{
+		comando.setRef2(expressao);
+	}
+	
+	 <FIMLINHA>
+	{//Ação semântica para verificar se a váriavel está recebendo uma expressão compatível com seu tipo	
+		if(foiDeclarada){
+			if(tabela.getSimbolo(t.image).getTipo() == 'n')
+				tipoCerto = expressao.isExpressaoNumerica(tabela);
+			else
+				tipoCerto = expressao.isExpressaoTexto();
+		
+			if(!tipoCerto)
+		    	System.err.println("ERRO!\n Erro Semântico: O tipo da variavel \"" + t.image + "\" não é compatível com a expressão atribuida"+"\n");
+		}    
+	}
+	{// Ação semãntica para incluir na tabela que variavel foi inicializada
+		tabela.inicializaIdent(t.image);
+		lista.add(comando);
+	}
 }
 
-void atribuicao() : {} 
+//O mesmo exp é usado para todos os comandos - A incompatibilidade de tipos será verificada depois
+Expressao exp() : {Expressao listaExp = new Expressao();}
 {
-	<VARIAVEIS><ATRIB>exp()<FIMLINHA>
-}
-
-Expressao exp() : {}
-{
-	expAuxiliar()
+	expAuxiliar(listaExp)
+	{return listaExp;}
 }	
 
-void expAuxiliar() : {}
+void expAuxiliar(Expressao listaExp) : {}
 {
-	termo()
-}	
-
-void termo() : {}
-{
-	termo1()(<OU> termo1())*	
+	termo(listaExp)
 }
 
-void termo1() : {}
+void termo(Expressao listaExp) : {Token t; Item item;}
 {
-	termo2()(<E> termo2())*
+	// A listaExp é usada para armazenar uma expressao no formato pós-fixo
+	// O roteiro (9.3) sugere um linkedList local sendo passado para os outros métodos e sugere que encapsule o linkedList
+	// como foi feito com a classe Expressao
+	termo1(listaExp) 
+	(
+		 t=<OU> termo1(listaExp)
+		 {//Depois que os dois termos da operação foram armazenados na lista, então o operador é armazenado   
+		 	item = new Item('o', t.image);
+		 	listaExp.inclui(item);
+		 }
+    )*	
+   // {System.out.println("Expressão no formato pós fixo: \n"+listaExp.toString()+"\n");} //Testando para ver se está certo	
 }
 
-void termo2() : {}
+void termo1(Expressao listaExp) : {Token t; Item item;}
 {
-	termo3()((<MAIOR> | <MENOR> | <MAIORIGUAL> | <MENORIGUAL> | <DIFERENTE> | <IGUAL>) termo3())*
+	termo2(listaExp) 
+	( 
+		t=<E> termo2(listaExp)
+		{
+			item = new Item('o', t.image);
+		 	listaExp.inclui(item);
+		}
+	)*
 }
 
-void termo3() : {}
+void termo2(Expressao listaExp) : {Token t; Item item;}
 {
-	termo4()( <MAIS> termo4()| <MENOS> termo4())*
+	termo3(listaExp) 
+	 ( 
+	 	(t=<MAIOR> | t=<MENOR> | t=<MAIORIGUAL> | t=<MENORIGUAL> | t=<DIFERENTE> | t=<IGUAL>) 
+	     termo3(listaExp)
+	 	{
+	 		item = new Item('o', t.image);
+		 	listaExp.inclui(item);
+	 	}
+	 )*
 }
 
-void termo4() : {}
+void  termo3(Expressao listaExp) : {Token t; Item item; }
 {
-	termo5()( <MULTIPLICACAO> termo5()| <DIVISAO> termo5())*
+	termo4(listaExp) 
+	( 
+		t=<MAIS> termo4(listaExp)
+		{//Seção 9.5 - Otimiza a expressao (otimizaExp é para calculos envolvendo constantes (5+4+a==9+a), 
+		 //tambem é verificado a existencia de elementos neutro e tem o adicional de otimizacao de string("ab"+"c"="abc"))
+		 //O operador só será inserido se não for possivel nenhuma das otimizações 
+			if(!listaExp.otimizaExpressao('+') && !listaExp.otimizaString()){
+				item = new Item('o', t.image);
+				listaExp.inclui(item);	
+			}
+		}	
+		
+		| 
+		
+		t=<MENOS> termo4(listaExp)
+		{
+			if(!listaExp.otimizaExpressao('-')){
+				item = new Item('o', t.image);
+				listaExp.inclui(item);	
+			}
+    		
+		}
+	)*
 }
 
-void termo5() : {}
+void  termo4(Expressao listaExp) : {Token t; Item item;}
 {
-	termo6()( <POTENCIA> termo5())*
+	termo5(listaExp) 
+	(
+		 
+		  t=<MULTIPLICACAO> termo5(listaExp)
+		  {
+		  	if(!listaExp.otimizaExpressao('*')){
+				item = new Item('o', t.image);
+				listaExp.inclui(item);	
+			}
+		  }
+		   
+		 |
+		 
+		  t=<DIVISAO> termo5(listaExp)
+		 {
+		 	if(!listaExp.otimizaExpressao('/')){
+				item = new Item('o', t.image);
+				listaExp.inclui(item);	
+			}
+		 }
+	)*
 }
 
-void termo6() : {}
+void  termo5(Expressao listaExp) : {Token t; Item item;}
 {
-	(<NAO>)* termo7()
+	termo6(listaExp) 
+	( 
+		t=<POTENCIA> termo5(listaExp) //Forma que encontrei para ser avaliado da direita para esquerda 
+		{
+			if(!listaExp.otimizaExpressao('^')){
+				item = new Item('o', t.image);
+				listaExp.inclui(item);	
+			}	
+		}
+	)* 
 }
 
-void termo7() : {}
+void  termo6(Expressao listaExp) : {Token t=null; Item item; int cont_OP_NOT=0;}
 {
-	(<MENOS> |<MAIS>)? <NUMEROS>
+	( t=<NAO> {cont_OP_NOT++;})* termo7(listaExp)
+	{// Se não tiver nenhum operador not não tem nehum operador a armazenar
+		if(t != null && (cont_OP_NOT % 2 != 0)){
+			item = new Item('o', t.image);
+			listaExp.inclui(item);
+		}	
+	}
+}
+
+void termo7(Expressao listaExp) : {Token t, t_aux=null; Item item; String num;}
+{
+	  //t_aux é usado para concatenar um op_adi com um numero e assim armazena-lo em num para inserir na lista 	(exemplo: +2)
+	  (t_aux=<MENOS> | t_aux=<MAIS>)? t=<NUMEROS>
+	  {// t_aux pode não ter pois é opicional o sinal a frente do numero
+	  	if(t_aux != null)
+	  		num = t_aux.image + t.image;
+	  	else	
+	  		num = t.image;
+	    item = new Item('n', num);
+        listaExp.inclui(item);
+	  }
+	  
 	|
-	 <VARIAVEIS>
+	
+	 t=<VARIAVEIS>
+	  {// Verifica se foi declarado
+		if(!tabela.isExiste(t.image))
+			System.err.println("ERRO!\n Erro Semantico: A váriavel \"" + t.image + "\" não foi declarada\n");
+	  }
+	  {//Verifica se foi inicializado
+	  	if(!tabela.foiInicializado(t.image))
+	  		System.err.println("ERRO!\n Erro Semantico: A váriavel \"" + t.image + "\" não foi inicializada\n");
+	  }
+	  {// Armazena na lista		
+		item = new Item('v', t.image);
+       	listaExp.inclui(item);	
+      }	 
+      
 	| 
-	 <PALAVRAS>
+	
+	 t=<PALAVRAS>
+	 {
+		item = new Item('s', t.image);
+       	listaExp.inclui(item);	
+	 }
+	 
 	| 
-	 <PARENTESQ> expAuxiliar() <PARENTDIR>
+	 //O expAuxiliar existe pois: Cada vez que ocorrer um parênteses na expressão, o exp será 
+	 //chamado e será criada uma nova lista precisando assim concatena-la a lista "principal" para formar só uma lista
+	 <PARENTESQ> expAuxiliar(listaExp) <PARENTDIR>
 }
 
-void SeNaoForIsso() : {}
+void SeNaoForIsso(List<Comando> lista) : {LinkedList<Comando> listaSe = new LinkedList<Comando>();Comando se = new Comando('S');Expressao expressao;}
 {
-	<IF> <PARENTESQ> exp() <PARENTDIR> (comandos())* (EhIsso())?
+	<IF> <PARENTESQ>
+	
+	expressao = exp() 
+	
+	{
+	 se.setRef1(expressao);
+	 
+	//Verifica se a expressao utilizada na condicao é compativel
+	if(!expressao.isExpressaoCondicional(tabela))
+		System.err.println("ERRO!\n Erro Semântico: A condição utilizada na estrutura se(){} não é compatível\n");
+	}
+	
+	
+	<PARENTDIR>
+
+	(
+		comandos(listaSe)
+	)*
+	  
+	{
+		se.setRef2(listaSe);
+	}
+	
+	( EhIsso(lista,se) )?
+	
+	{
+		lista.add(se);
+	}
 }
 	     		
-void EhIsso() : {}
+void EhIsso(List<Comando> lista,Comando se) : {LinkedList<Comando> listaSenao = new LinkedList<Comando>();}
 {
-	<ELSE> (comandos())*<FIMIF>
+	<ELSE>
+	 
+	(
+		comandos(listaSenao)
+	)*
+	  
+	{
+		se.setRef3(listaSenao);
+	} 
+	  
+	<FIMIF>
 }
 
-void RodeAteQue() : {}
+void RodeAteQue(List<Comando> lista) : {LinkedList<Comando> listaEnquanto = new LinkedList<Comando>();Comando enquanto = new Comando('E');Expressao expressao;}
 {
-	 <WHILE> <PARENTESQ>exp()<PARENTDIR> (comandos())*<FIMWHILE>
+	 <WHILE> <PARENTESQ> 
+	 
+	  expressao = exp()
+	  
+	 {
+	 	enquanto.setRef1(expressao);
+
+		//Verifica se a expressao utilizada na condicao é compativel
+		if(!expressao.isExpressaoCondicional(tabela))
+			System.err.println("ERRO!\n Erro Semântico: A condição utilizada na estrutura enquanto(){} não é compatível\n");
+	 }	 
+	 <PARENTDIR>
+
+	  (
+	    comandos(listaEnquanto)  
+	  )*
+	  
+	  {
+	  	enquanto.setRef2(listaEnquanto);
+	  	lista.add(enquanto);
+	  }
+
+	 <FIMWHILE>
 }
 
-void Entrada() : {}
+void Entrada(List<Comando> lista) : {}
 {
-	<ENTRADA> <PARENTESQ> corpoEntrada()<PARENTDIR> <FIMLINHA>
+	<ENTRADA> <PARENTESQ> corpoEntrada(lista)<PARENTDIR> <FIMLINHA>
 }
 
-void corpoEntrada() : {}
+void corpoEntrada(List<Comando> lista) : {Comando comandoImprime = new Comando('I');Comando comandoLeia = new Comando('L');Token t;}
 {
-	(<PALAVRAS> <VIRGULA>)?<VARIAVEIS>(<VIRGULA><VARIAVEIS>)*
+	 (t=<PALAVRAS> <VIRGULA>
+	   {
+	   	 comandoImprime.setRef1(t.image);
+	   	 lista.add(comandoImprime);
+	   }
+	 )?
+	 
+	  t=<VARIAVEIS>
+	  
+	  {
+	  	comandoLeia.setRef1(t.image);
+	  	lista.add(comandoLeia);
+	  } 
+	  
+	 {
+		if(!tabela.isExiste(t.image))
+			System.err.println("ERRO!\n Erro Semantico: A váriavel \"" + t.image + "\" não foi declarada\n");
+     }	
+     {// Ação semãntica para incluir na tabela que variavel foi inicializada
+		tabela.inicializaIdent(t.image);
+	 } 
+  
+    (
+    	<VIRGULA> t=<VARIAVEIS>
+    	
+    	{
+	  	    comandoLeia.setRef1(t.image);
+	  	    lista.add(comandoLeia);
+	    }
+    	
+    	{
+    		if(!tabela.isExiste(t.image))
+				System.err.println("ERRO!\n Erro Semantico: A váriavel \"" + t.image + "\" não foi declarada\n");
+    	}
+    	{// Ação semãntica para incluir na tabela que variavel foi inicializada
+			tabela.inicializaIdent(t.image);
+		}
+    )*
 }
 
-void Mostra() : {}
+void Mostra(List<Comando> lista) : {Expressao expressao;}
 {
-	<MOSTRA> <PARENTESQ> corpoMostra() <PARENTDIR> <FIMLINHA>
+	<MOSTRA> <PARENTESQ> corpoMostra(lista) <PARENTDIR> <FIMLINHA>
 }
 
-void corpoMostra() : {}
+void corpoMostra(List<Comando> lista) : {Expressao expressao;Comando comandoExibe = new Comando('I');Token t;}
 {	
-	<PALAVRAS> <VIRGULA> exp()
+   (t=<PALAVRAS> <VIRGULA> 
+        {
+           comandoExibe.setRef1(t.image);
+   	       lista.add(comandoExibe);
+        }
+    )?
+   
+    expressao = exp()
+	    
+    {
+		if(!expressao.isExpressaoTexto())
+			System.err.println("ERRO!\n Erro Semântico: A expressão utilizada na estrutura exibe() não é compatível\n");
+	   	 
+	   	comandoExibe.setRef1(expressao);
+	   	lista.add(comandoExibe);
+	}
 }
