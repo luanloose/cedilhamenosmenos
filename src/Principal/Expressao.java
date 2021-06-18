@@ -1,10 +1,9 @@
 package Principal;
 
-import java.io.Serializable;
 import java.util.LinkedList;
 
 
-public class Expressao implements Serializable {
+public class Expressao {
 
 	private LinkedList<Item> listaExp;
 
@@ -28,8 +27,7 @@ public class Expressao implements Serializable {
 	public boolean otimizaExpressao(char operacao){
 		Item item;
 		double res, a, b;
-		// listaExp.getLast().getTipo() -> ultimo elemento da lista
-		// listaExp.get(listaExp.size() - 2).getTipo() -> penultimo elemento da lista
+
 		if(listaExp.getLast().getTipo() == 'n' && listaExp.get(listaExp.size() - 2).getTipo() == 'n'){
 			b=Double.parseDouble(listaExp.removeLast().getValor());
 			a=Double.parseDouble(listaExp.removeLast().getValor());

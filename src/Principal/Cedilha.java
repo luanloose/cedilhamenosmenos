@@ -2,17 +2,19 @@
 package Principal;
 import java.io.*;
 import java.util.*;
+import java.util.List;
+import java.util.LinkedList;
 
 public class Cedilha implements CedilhaConstants {
         static public boolean erro = false;
-        static HashMap<Simbolo> tab = new HashMap<Simbolo>();
+        static List<Comando> listaComando = new LinkedList<Comando>();
 
         public static void main(String args[])  throws ParseException  {
                 try {
                         Cedilha x = new Cedilha(new FileInputStream("main.\u00e7--"));
-                        x.inicio();
-                        System.out.println(tab);
-                        //x.S(); 
+                        inicio(listaComando);
+                        IO.gravarObjetos("arquivo.bin", new Object[] {listaComando, tabela});
+                System.out.println("\u005cnTabela de Simbolos (Variaveis): \u005cn\u005cn"+tabela.toString());
                 }
                 catch(FileNotFoundException e) {
                         System.out.println("Arquivo n\u00e3o encontrado");
@@ -47,7 +49,7 @@ public class Cedilha implements CedilhaConstants {
         jj_la1[0] = jj_gen;
         break label_1;
       }
-      declaraVar();
+      declaraVar(lista);
     }
     label_2:
     while (true) {
@@ -68,8 +70,8 @@ public class Cedilha implements CedilhaConstants {
       System.out.println(lista);
   }
 
-  static final public void declaraVar() throws ParseException {
-                      char tp;
+  static final public void declaraVar(List<Comando> lista) throws ParseException {
+                                         char tp;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case NUMEROS:
       jj_consume_token(NUMEROS);

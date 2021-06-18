@@ -2,6 +2,8 @@
 package Principal;
 import java.io.*;
 import java.util.*;
+import java.util.List;
+import java.util.LinkedList;
 
 /** Token Manager. */
 public class CedilhaTokenManager implements CedilhaConstants
