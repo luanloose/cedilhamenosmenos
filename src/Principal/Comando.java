@@ -1,8 +1,6 @@
 package Principal;
 
-import java.io.Serializable;
-
-public class Comando implements Serializable {
+public class Comando {
 	
 	char tipo;
 	Object ref1;
@@ -16,8 +14,6 @@ public class Comando implements Serializable {
 		this.ref2 = null;
 		this.ref3 = null;
 	}
-	
-	
 	
 	public char getTipo() {
 		return tipo;

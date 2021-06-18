@@ -9,17 +9,19 @@ PARSER_BEGIN(Cedilha)
 package Principal;
 import java.io.*;
 import java.util.*;
+import java.util.List;
+import java.util.LinkedList;
 
 public class Cedilha {
 	static public boolean erro = false;
-	static HashMap<Simbolo> tab = new HashMap<Simbolo>();
+	static List<Comando> listaComando = new LinkedList<Comando>();
 
 	public static void main(String args[])  throws ParseException  {
 		try {
 			Cedilha x = new Cedilha(new FileInputStream("main.ç--"));
-			x.inicio();
-			System.out.println(tab);
-			//x.S(); 
+			inicio(listaComando);
+			IO.gravarObjetos("arquivo.bin", new Object[] {listaComando, tabela});         
+         	System.out.println("\nTabela de Simbolos (Variaveis): \n\n"+tabela.toString());
 		}
 		catch(FileNotFoundException e) {
 			System.out.println("Arquivo não encontrado");
@@ -124,13 +126,13 @@ void inicio(List<Comando> lista) : {}
 
 void corpo(List<Comando> lista) : {}
 {
-    (declaraVar())* (comandos(lista))*
+    (declaraVar(lista))* (comandos(lista))*
     {
       System.out.println(lista);
    }
 }	 
 
-void declaraVar() : { char tp; }
+void declaraVar(List<Comando> lista) : { char tp; }
 {
 	( <NUMEROS> {tp='n';} | <PALAVRAS> {tp='s';})
 	listaVar(tp) <FIMLINHA>

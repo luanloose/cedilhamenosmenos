@@ -1,9 +1,6 @@
 package Principal;
 
-import java.io.Serializable;
-
-
-public class Item implements Serializable {
+public class Item {
 
 	private char tipo; // pode ser 'n' (número), 's' (string), 'v' (variável) ou 'o' (operador).
 	private String valor;
